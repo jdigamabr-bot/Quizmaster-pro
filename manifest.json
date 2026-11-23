@@ -1,0 +1,19 @@
+
+{
+  "name": "Quiz Master Pro",
+  "short_name": "Quiz Master",
+  "description": "Learn, Practice and Achieve",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080d20",
+  "theme_color": "#080d20",
+  "icons": [
+    {
+      "src": "quiz.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
