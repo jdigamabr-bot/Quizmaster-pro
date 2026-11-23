@@ -1,0 +1,1413 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Master Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --text:#ffffff;
+  --muted:#c6c9df;
+  --glass:rgba(255,255,255,.09);
+  --border:rgba(255,255,255,.17);
+  --accent:#9b72ff;
+  --accent2:#35c8ff;
+  --bg:#080d20;
+  --shadow:0 12px 35px rgba(0,0,0,.25);
+}
+body.light {
+  --text:#17213b;
+  --muted:#59647d;
+  --glass:rgba(255,255,255,.45);
+  --border:rgba(255,255,255,.65);
+  --bg:#e9edff;
+}
+* {box-sizing:border-box;margin:0;padding:0}
+body {
+    font-family: Poppins, sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    transition: 0.3s;
+
+    background:
+        linear-gradient(
+            rgba(3, 5, 25, 0.40),
+            rgba(3, 5, 25, 0.55)
+        ),
+        url("images/quiz.png");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+body.light {
+  background:
+    linear-gradient(rgba(220,229,255,.55),rgba(220,229,255,.7)),
+    url("assets/images/quiz.png") center/cover fixed,
+    var(--bg);
+}
+button,input,textarea,select {font:inherit}
+button {cursor:pointer;border:0}
+header {
+  position:sticky;top:0;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 5%;
+  background:rgba(8,12,30,.75);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+}
+.logo {font-size:21px;font-weight:800}
+.logo span {color:#a98aff}
+.header-actions {display:flex;gap:9px}
+.small-btn {
+  padding:9px 13px;border-radius:12px;
+  color:white;background:var(--glass);
+  border:1px solid var(--border);
+}
+.container {width:min(1150px,92%);margin:auto}
+.hero {
+  margin:25px 0;padding:30px 22px;
+  border:1px solid var(--border);
+  border-radius:25px;background:var(--glass);
+  backdrop-filter:blur(15px);box-shadow:var(--shadow);
+}
+.hero h1 {font-size:clamp(27px,5vw,43px);line-height:1.25}
+.hero h1 span {
+  background:linear-gradient(90deg,#b58aff,#38d6ff);
+  -webkit-background-clip:text;color:transparent;
+}
+.hero p {color:var(--muted);margin:12px 0 20px}
+.primary {
+  background:linear-gradient(100deg,#8759ef,#398cff);
+  color:white;padding:12px 19px;border-radius:12px;
+  font-weight:700;
+}
+.stats {
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:12px;margin-top:22px;
+}
+.stat {
+  padding:14px;text-align:center;border-radius:15px;
+  background:var(--glass);border:1px solid var(--border);
+}
+.stat strong {display:block;font-size:23px;color:#b99aff}
+.stat small {color:var(--muted)}
+.section-title {font-size:21px;margin:25px 0 14px}
+.grid {
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;margin-bottom:25px;
+}
+.card {
+  padding:19px;border-radius:19px;
+  background:var(--glass);border:1px solid var(--border);
+  backdrop-filter:blur(15px);box-shadow:var(--shadow);
+  transition:.2s;
+}
+.card:hover {transform:translateY(-3px);border-color:#a78bfa}
+.card .emoji {font-size:30px}
+.card h3 {font-size:16px;margin:9px 0 5px}
+.card p {font-size:12px;color:var(--muted);line-height:1.6}
+.card button {margin-top:13px}
+.search {
+  width:100%;padding:13px 15px;border-radius:12px;
+  background:var(--glass);border:1px solid var(--border);
+  color:var(--text);outline:none;margin:12px 0;
+}
+.page {display:none;padding:20px 0 100px}
+.page.active {display:block}
+.panel {
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:20px;padding:20px;margin:14px 0;
+  backdrop-filter:blur(15px);
+}
+.back {margin-bottom:15px}
+.muted {color:var(--muted);font-size:13px}
+.option {
+  display:block;width:100%;text-align:left;
+  margin:10px 0;padding:13px;border-radius:12px;
+  color:var(--text);background:var(--glass);
+  border:1px solid var(--border);
+}
+.option:hover {border-color:#a98aff}
+.option.correct {background:rgba(30,190,120,.25);border-color:#35d69a}
+.option.wrong {background:rgba(255,70,90,.2);border-color:#ff637a}
+input,textarea,select {
+  width:100%;padding:12px;border-radius:11px;
+  color:var(--text);background:var(--glass);
+  border:1px solid var(--border);margin:8px 0;
+  outline:none;
+}
+textarea {min-height:100px;resize:vertical}
+select option {color:#111}
+.progress {
+  height:8px;border-radius:10px;background:rgba(255,255,255,.15);
+  overflow:hidden;margin:12px 0;
+}
+.progress div {height:100%;background:#a98aff;width:0}
+.bottom {
+  position:fixed;bottom:0;left:0;width:100%;z-index:9;
+  display:flex;justify-content:space-around;gap:5px;
+  padding:10px 4px;
+  background:rgba(8,12,30,.9);
+  border-top:1px solid var(--border);
+  backdrop-filter:blur(18px);
+}
+.bottom button {
+  background:none;color:#ddd;font-size:11px;padding:5px;
+}
+.bottom span {display:block;font-size:19px}
+.hidden {display:none!important}
+footer {text-align:center;color:var(--muted);padding:25px;font-size:12px}
+.founders {display:flex;gap:15px;flex-wrap:wrap}
+.founder {flex:1;min-width:180px;text-align:center}
+.founder img {
+  width:85px;height:85px;border-radius:50%;
+  object-fit:cover;border:3px solid #a98aff;
+}
+.tag {font-size:11px;color:#c4aaff}
+.list-item {
+  padding:13px;margin:9px 0;border-radius:12px;
+  background:var(--glass);border:1px solid var(--border);
+}
+@media(max-width:600px) {
+  header {padding:12px 4%}
+  .logo {font-size:17px}
+  .hero {padding:23px 16px}
+  .stats {gap:7px}
+  .stat {padding:10px 4px}
+  .stat strong {font-size:19px}
+  .grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .card {padding:13px}
+  .card h3 {font-size:14px}
+  .card p {font-size:11px}
+  .bottom button {font-size:9px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">🚀 Quiz Master <span>Pro</span></div>
+  <div class="header-actions">
+    <button class="small-btn" onclick="toggleTheme()">🌗</button>
+    <button class="small-btn" onclick="showPage('profile')">👤</button>
+  </div>
+</header>
+  
+<!-- AUTHENTICATION PAGE -->
+<section id="authPage" class="page">
+  <div class="panel" style="max-width:450px;margin:40px auto;text-align:center">
+
+    <div style="font-size:45px">🚀</div>
+    <h2>Quiz Master Pro</h2>
+    <p class="muted">Your personal learning account</p>
+
+    <div id="signupFields" class="hidden">
+      <input id="signupName" placeholder="Your Full Name">
+    </div>
+
+    <input id="authEmail" type="email" placeholder="Email Address">
+    <input id="authPassword" type="password" placeholder="Password">
+
+    <button class="primary" style="width:100%"
+      onclick="handleAuth()">
+      Login
+    </button>
+
+    <p id="authMessage" class="muted" style="margin-top:12px"></p>
+
+    <p style="margin-top:15px">
+      <button class="small-btn" onclick="toggleAuthMode()">
+        Create New Account
+      </button>
+    </p>
+
+  </div>
+</section>
+
+
+<main class="container">
+
+<!-- HOME -->
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="tag">WELCOME TO YOUR LEARNING WORLD</div>
+    <h1>Challenge Your <span>Mind</span> 🚀</h1>
+    <p>Learn. Practice. Compete. Improve yourself every day with Quiz Master Pro.</p>
+    <button class="primary" onclick="startQuiz('mega')">Start Mega Quiz →</button>
+    <div class="stats">
+      <div class="stat"><strong>750+</strong><small>Demo Questions</small></div>
+      <div class="stat"><strong>50+</strong><small>Subjects Planned</small></div>
+      <div class="stat"><strong>13</strong><small>Features</small></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Explore Features ✨</h2>
+  <input class="search" id="featureSearch" placeholder="Search any feature..." oninput="filterFeatures()">
+  <div class="grid" id="featureGrid"></div>
+
+  <div class="panel">
+    <h2 class="section-title">Meet Our Founders</h2>
+    <div class="founders">
+      <div class="founder">
+        <img src="assets/images/Priti1.jpg" alt="Priti">
+        <h3>Priti</h3><div class="tag">Founder</div>
+        <p class="muted">Turning innovative ideas into reality.</p>
+      </div>
+      <div class="founder">
+        <img src="assets/images/Bhagyashree1.jpg" alt="Bhagyashree">
+        <h3>Bhagyashree</h3><div class="tag">Co-Founder</div>
+        <p class="muted">Building a smarter learning experience.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALL QUIZ -->
+<section id="quiz" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <div class="panel">
+    <h2 id="quizTitle">All Subject Mega Quiz</h2>
+    <p class="muted" id="quizInfo">Mixed questions from multiple subjects</p>
+    <div class="progress"><div id="quizProgress"></div></div>
+    <div style="display:flex;justify-content:space-between">
+      <span id="questionCount">Question 1</span>
+      <strong id="timer">⏱ 30</strong>
+    </div>
+    <h3 id="questionText" style="margin:20px 0">Question appears here</h3>
+    <div id="options"></div>
+    <p id="feedback" class="muted"></p>
+    <button class="primary" id="nextBtn" onclick="nextQuestion()" disabled>Next Question →</button>
+  </div>
+</section>
+
+<!-- INTERVIEW -->
+<section id="interview" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">Interview Preparation 🎯</h2>
+  <p class="muted">Practice common technical and HR interview questions.</p>
+  <div class="panel">
+    <select id="interviewCategory" onchange="renderInterview()">
+      <option value="All">All Categories</option>
+      <option>HR</option><option>Java</option><option>Python</option>
+      <option>DBMS</option><option>Operating System</option>
+      <option>Computer Networks</option>
+    </select>
+    <div id="interviewList"></div>
+  </div>
+</section>
+  
+<!-- PERFORMANCE / PROGRESS -->
+<section id="performance" class="page">
+
+  <button class="small-btn back" onclick="showPage('home')">
+    ← Home
+  </button>
+
+  <h2 class="section-title">📊 My Performance</h2>
+
+  <div class="grid">
+
+    <div class="stat">
+      <strong id="totalQuizzes">0</strong>
+      <small>Total Quizzes</small>
+    </div>
+
+    <div class="stat">
+      <strong id="performanceCorrect">0</strong>
+      <small>Total Correct</small>
+    </div>
+
+    <div class="stat">
+      <strong id="averageScore">0%</strong>
+      <small>Average Score</small>
+    </div>
+
+  </div>
+
+  <div class="panel">
+    <h3>Quiz History</h3>
+    <div id="performanceHistory"></div>
+  </div>
+
+</section>
+
+
+<!-- LEADERBOARD -->
+<section id="leaderboard" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">🏆 Leaderboard & Competition</h2>
+  <div class="panel">
+    <p class="muted">Sample leaderboard. Online competition will be enabled after backend connection.</p>
+    <div id="leaderboardList"></div>
+  </div>
+</section>
+
+<!-- =====================================
+             RESULT PAGE
+        ====================================== -->
+
+        <section id="resultSection" class="hidden">
+
+            <div class="quiz-box" style="text-align:center">
+
+                <div style="font-size:48px">
+                    🏆
+                </div>
+
+                <h2>Quiz Completed!</h2>
+
+                <div class="result-score" id="finalScore">
+                    0 / 15
+                </div>
+
+                <div class="result-stats">
+
+                    <div class="stat">
+
+                        <strong id="correctCount">0</strong>
+
+                        <small>Correct</small>
+
+                    </div>
+
+                    <div class="stat">
+
+                        <strong id="wrongCount">0</strong>
+
+                        <small>Wrong</small>
+
+                    </div>
+
+                </div>
+
+                <p
+                    id="resultMessage"
+                    style="margin-top:20px;color:var(--muted)"
+                ></p>
+
+                <button class="btn" onclick="startEngineeringQuiz()">
+                    Play Again
+                </button>
+
+                <button class="btn btn-outline" onclick="goHome()">
+                    Home
+                </button>
+
+            </div>
+
+        </section>
+
+<!-- DAILY CHALLENGE -->
+<section id="daily" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">🔥 Daily Challenge</h2>
+  <div class="panel">
+    <p id="todayDate" class="tag"></p>
+    <h3>Today's Quick Challenge</h3>
+    <p class="muted">Try today's mixed-subject challenge.</p>
+    <button class="primary" onclick="startQuiz('daily')">Start Daily Challenge</button>
+  </div>
+</section>
+
+<!-- NOTES & STUDY -->
+<section id="study" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+
+  <h2 class="section-title">📚 Notes & Study</h2>
+  <div class="panel">
+  <h3>🎓 VTU Circle Resources</h3>
+  <p>Access VTU notes, question papers,
+  syllabus and lab programs.</p>
+
+  <button class="primary"
+    onclick="window.open('https://vtucircle.com/','_blank')">
+    Open VTU Circle ↗
+  </button>
+  </div>
+  <div id="vtuSubjectsSection" class="panel hidden">
+  <h3>📚 Available Subjects</h3>
+
+  <p id="vtuSelectionInfo" class="muted"></p>
+
+  <div id="vtuSubjectsList" class="grid"></div>
+  </div>
+  <div class="panel">
+  <h3>🎓 VTU Study Material</h3>
+    
+    <label>Select VTU Scheme</label>
+<select id="vtuScheme">
+  <option value="">Choose Scheme</option>
+  <option value="2022">2022 Scheme</option>
+  <option value="2025">2025 Scheme</option>
+</select>
+  <select id="vtuBranch">
+  <option value="">Choose Branch</option>
+  <option value="CSE">Computer Science & Engineering</option>
+  <option value="ISE">Information Science & Engineering</option>
+  <option value="CE">Computer Engineering</option>
+  <option value="AIML">Artificial Intelligence & ML</option>
+  <option value="AIDS">Artificial Intelligence & Data Science</option>
+  <option value="CSBS">Computer Science & Business Systems</option>
+  <option value="CSD">Computer Science & Design</option>
+  <option value="CSE-IOT">CSE Internet of Things</option>
+  <option value="ECE">Electronics & Communication</option>
+  <option value="EEE">Electrical & Electronics</option>
+  <option value="ME">Mechanical Engineering</option>
+  <option value="CEV">Civil Engineering</option>
+  <option value="BT">Biotechnology</option>
+  <option value="CHE">Chemical Engineering</option>
+  <option value="AUTO">Automobile Engineering</option>
+  <option value="MIN">Mining Engineering</option>
+  <option value="MTR">Mechatronics</option>
+  <option value="TEXT">Textile Technology</option>
+  <option value="TE">Telecommunication Engineering</option>
+  <option value="MED">Medical Electronics</option>
+  <option value="EI">Electronics & Instrumentation</option>
+</select>
+
+  <label>Select Semester</label>
+  <select id="vtuSemester">
+    <option value="">Choose Semester</option>
+    <option>1st Semester</option>
+    <option>2nd Semester</option>
+    <option>3rd Semester</option>
+    <option>4th Semester</option>
+    <option>5th Semester</option>
+    <option>6th Semester</option>
+    <option>7th Semester</option>
+    <option>8th Semester</option>
+  </select>
+
+  <button class="primary"
+    onclick="openVTUStudy()">
+    Find Study Material
+  </button>
+  </div>
+
+  <div class="panel">
+    <h3>✍️ Create Your Note</h3>
+
+    <input id="newNoteTitle" placeholder="Enter note title">
+
+    <select id="newNoteSubject">
+      <option value="">Select Subject</option>
+      <option>Programming</option>
+      <option>DBMS</option>
+      <option>Operating System</option>
+      <option>Computer Networks</option>
+      <option>Data Structures</option>
+      <option>Mathematics</option>
+      <option>General Knowledge</option>
+      <option>Other</option>
+    </select>
+
+    <textarea id="newNoteContent"
+      placeholder="Write your notes here..."></textarea>
+
+    <label>
+      <input type="checkbox" id="newNoteImportant"
+        style="width:auto">
+      ⭐ Mark as Important
+    </label>
+
+    <button class="primary" onclick="saveStudyNote()">
+      💾 Save Note
+    </button>
+
+    <p id="noteMessage" class="muted"></p>
+  </div>
+
+  <h3 class="section-title">📖 My Saved Notes</h3>
+
+  <input class="search" id="noteSearch"
+    placeholder="Search notes..."
+    oninput="renderNotes()">
+
+  <div id="notesList" class="grid"></div>
+</section>
+
+
+<!-- AI ASSISTANT -->
+<section id="assistant" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">🤖 AI Study Assistant</h2>
+  <div class="panel">
+    <p class="muted">Demo assistant interface. Real AI answers require an AI API and secure backend.</p>
+    <div id="chatBox" class="list-item">Hello! Ask me a study question. This is currently a demo assistant.</div>
+    <textarea id="chatInput" placeholder="Ask your study question..."></textarea>
+    <button class="primary" onclick="askAssistant()">Send Message</button>
+  </div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">👤 Student Profile</h2>
+  <div class="panel">
+    <label>Student Name</label>
+    <input id="profileName" placeholder="Enter your name">
+    <label>College / Institute</label>
+    <input id="profileCollege" placeholder="Enter college name">
+    <label>Course</label>
+    <input id="profileCourse" placeholder="Example: Engineering">
+    <button class="primary" onclick="saveProfile()">Save Profile</button>
+    <p id="profileMessage" class="muted"></p>
+  </div>
+</section>
+
+<!-- EXAM MODE -->
+<section id="exam" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">📝 Exam Mode</h2>
+  <div class="panel">
+    <p>Test your preparation with a timed mock exam.</p>
+    <p class="muted">Demo exam: 10 questions, 30 seconds per question.</p>
+    <button class="primary" onclick="startQuiz('exam')">Start Exam</button>
+  </div>
+</section>
+
+<!-- BATTLE -->
+<section id="battle" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">⚔️ Battle Mode</h2>
+  <div class="panel">
+    <h3>Challenge the Computer</h3>
+    <p class="muted">Practice in a simulated solo battle. Online multiplayer requires backend connection.</p>
+    <button class="primary" onclick="startQuiz('battle')">Start Battle</button>
+  </div>
+</section>
+
+<!-- BOOKMARKS -->
+<section id="bookmarks" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">⭐ Bookmark Questions</h2>
+  <div id="bookmarkList"></div>
+</section>
+
+<!-- WRONG ANSWERS -->
+<section id="wrong" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">❌ Wrong Answer Practice</h2>
+  <div id="wrongList"></div>
+  <button class="primary" onclick="startWrongPractice()">Practice Wrong Answers</button>
+</section>
+
+<!-- CERTIFICATE -->
+<section id="certificate" class="page">
+  <button class="small-btn back" onclick="showPage('home')">← Home</button>
+  <h2 class="section-title">🎓 Certificate Generator</h2>
+  <div class="panel">
+    <input id="certificateName" placeholder="Enter student name">
+    <input id="certificateCourse" placeholder="Course / Quiz name">
+    <button class="primary" onclick="makeCertificate()">Generate Certificate</button>
+  </div>
+  <div id="certificateArea" class="panel hidden" style="text-align:center;padding:35px">
+    <div class="tag">QUIZ MASTER PRO</div>
+    <h1 style="margin:15px 0;color:#a98aff">Certificate of Achievement</h1>
+    <p>This certificate is presented to</p>
+    <h2 id="certName" style="margin:18px 0"></h2>
+    <p>For completing</p>
+    <h3 id="certCourse"></h3>
+    <p style="margin-top:25px">Quiz Master Pro · Learning Achievement</p>
+    <button class="primary" onclick="window.print()">Print Certificate</button>
+  </div>
+</section>
+
+</main>
+
+<footer>© 2026 Quiz Master Pro · Learn • Practice • Achieve</footer>
+
+<nav class="bottom">
+  <button onclick="showPage('home')"><span>🏠</span>Home</button>
+  <button onclick="startQuiz('mega')"><span>🧠</span>Quiz</button>
+  <button onclick="showPage('interview')"><span>💼</span>Interview</button>
+  <button onclick="showPage('performance')"><span>📊</span>Progress</button>
+  <button onclick="showPage('profile')"><span>👤</span>Profile</button>
+</nav>
+
+<script>
+// ===============================
+// QUIZ MASTER PRO - MAIN JAVASCRIPT
+// ===============================
+
+// ===============================
+// SUPABASE CONNECTION
+// ===============================
+
+const SUPABASE_URL = "https://iokwwpdunvdndzcgpovw.supabase.co";
+const SUPABASE_KEY = "sb_publishable_q8ZxSv1YOJY2V17BXhKNYg_ZKE6IMys";
+
+const QUIZ_TABLE = "Quiz Master pro";
+const INTERVIEW_TABLE = "Interview preparation";
+
+let supabaseQuizQuestions = [];
+let supabaseInterviewQuestions = [];
+
+async function fetchSupabaseTable(tableName) {
+  let allRows = [];
+  let start = 0;
+  const limit = 1000;
+
+  while (true) {
+    const url = `${SUPABASE_URL}/rest/v1/${encodeURIComponent(tableName)}?select=*`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Range": `${start}-${start + limit - 1}`,
+        "Range-Unit": "items"
+      }
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Supabase error (${response.status}): ${error}`);
+    }
+
+    const rows = await response.json();
+    allRows = allRows.concat(rows);
+
+    if (rows.length < limit) break;
+    start += limit;
+  }
+
+  return allRows;
+}
+
+function normalizeQuizQuestion(row) {
+  const question = row.question || row.question_text || row.q || "";
+
+  let options = row.options;
+
+  if (typeof options === "string") {
+    try {
+      options = JSON.parse(options);
+    } catch (e) {
+      options = options.split("|").map(x => x.trim());
+    }
+  }
+
+  if (!Array.isArray(options)) {
+    options = [
+      row.option_a,
+      row.option_b,
+      row.option_c,
+      row.option_d
+    ];
+  }
+
+  options = options.map(x => String(x ?? "").trim());
+
+  if (!question || options.length !== 4 || options.some(x => !x)) {
+    return null;
+  }
+
+  const answer = row.correct_answer ??
+                 row.correct_option ??
+                 row.answer_index ??
+                 row.answer;
+
+  let answerIndex = -1;
+
+  if (typeof answer === "number" || /^\d+$/.test(String(answer))) {
+    const n = Number(answer);
+    answerIndex = n === 0 ? 0 : n >= 1 && n <= 4 ? n - 1 : -1;
+  } else {
+    const value = String(answer ?? "").trim();
+
+    if (/^[A-D]$/i.test(value)) {
+      answerIndex = value.toUpperCase().charCodeAt(0) - 65;
+    } else {
+      answerIndex = options.findIndex(
+        option => option.toLowerCase() === value.toLowerCase()
+      );
+    }
+  }
+
+  if (answerIndex < 0 || answerIndex > 3) return null;
+
+  return {
+    s: row.subject || row.category || "General",
+    q: question,
+    o: options,
+    a: answerIndex,
+    e: row.explanation || ""
+  };
+}
+
+async function loadSupabaseQuiz() {
+  const rows = await fetchSupabaseTable(QUIZ_TABLE);
+
+  supabaseQuizQuestions = rows
+    .map(normalizeQuizQuestion)
+    .filter(Boolean);
+
+  return supabaseQuizQuestions;
+}
+
+async function loadSupabaseInterview() {
+  const rows = await fetchSupabaseTable(INTERVIEW_TABLE);
+
+  supabaseInterviewQuestions = rows.filter(row =>
+    row.question && row.answer
+  ).map(row => ({
+    category: row.category || row.subject || "General",
+    question: row.question,
+    answer: row.answer,
+    explanation: row.explanation || ""
+  }));
+
+  return supabaseInterviewQuestions;
+}
+
+const features = [
+ ["mega","🧠","All Subject Mega Quiz","Mixed questions from engineering, science, maths and GK."],
+ ["interview","💼","Interview Preparation","HR and technical interview practice."],
+ ["leaderboard","🏆","Leaderboard & Competition","View sample competition rankings."],
+ ["performance","📊","My Performance","Track your quiz scores and history."],
+ ["daily","🔥","Daily Challenge","Try a new daily quiz challenge."],
+ ["study","📚","Notes & Study Material","Explore study notes and concepts."],
+ ["assistant","🤖","AI Study Assistant","Demo study assistant interface."],
+ ["profile","👤","Student Profile","Manage your student profile."],
+ ["exam","📝","Exam Mode","Attempt a timed mock examination."],
+ ["battle","⚔️","Battle Mode","Challenge the computer in quiz practice."],
+ ["bookmarks","⭐","Bookmark Questions","Save questions for later."],
+ ["wrong","❌","Wrong Answer Practice","Practice questions answered incorrectly."],
+ ["certificate","🎓","Certificate Generator","Create a printable learning certificate."]
+];
+
+const questions = [
+ {s:"Programming",q:"Which language is known as the language of the web?",o:["HTML","Python","C","Java"],a:0,e:"HTML is the standard markup language used to structure web pages."},
+ {s:"Computer Science",q:"What does CPU stand for?",o:["Central Processing Unit","Computer Personal Unit","Central Program Utility","Control Processing User"],a:0,e:"CPU stands for Central Processing Unit."},
+ {s:"DBMS",q:"Which language is commonly used to query relational databases?",o:["HTML","SQL","CSS","XML"],a:1,e:"SQL is used to query and manage relational databases."},
+ {s:"Mathematics",q:"What is the value of 12 × 8?",o:["86","92","96","108"],a:2,e:"12 multiplied by 8 equals 96."},
+ {s:"Physics",q:"What is the SI unit of force?",o:["Joule","Newton","Watt","Pascal"],a:1,e:"The SI unit of force is Newton."},
+ {s:"Chemistry",q:"What is the chemical symbol of Oxygen?",o:["Ox","O","Og","On"],a:1,e:"The chemical symbol for oxygen is O."},
+ {s:"Biology",q:"Which part of a plant conducts photosynthesis?",o:["Root","Stem","Leaf","Flower"],a:2,e:"Leaves contain chlorophyll and are the main site of photosynthesis."},
+ {s:"Engineering",q:"Which component stores electrical charge?",o:["Resistor","Capacitor","Diode","Switch"],a:1,e:"A capacitor stores electrical energy in an electric field."},
+ {s:"Networking",q:"What does IP stand for?",o:["Internet Protocol","Internal Program","Input Process","Internet Port"],a:0,e:"IP stands for Internet Protocol."},
+ {s:"Operating System",q:"Which is an example of an operating system?",o:["Linux","HTML","MySQL","CSS"],a:0,e:"Linux is an operating system."},
+ {s:"General Knowledge",q:"What is the capital of India?",o:["Mumbai","New Delhi","Kolkata","Chennai"],a:1,e:"New Delhi is the capital of India."},
+ {s:"Electronics",q:"A diode primarily allows current to flow in how many directions?",o:["One","Two","Three","Four"],a:0,e:"A typical diode conducts mainly in one direction."},
+ {s:"Mechanical",q:"Which device measures temperature?",o:["Barometer","Thermometer","Ammeter","Voltmeter"],a:1,e:"A thermometer measures temperature."},
+ {s:"Civil",q:"Which material is commonly used with cement in reinforced concrete?",o:["Timber","Steel","Plastic","Glass"],a:1,e:"Steel reinforcement helps concrete resist tensile forces."},
+ {s:"Data Structures",q:"Which data structure follows FIFO?",o:["Stack","Queue","Tree","Graph"],a:1,e:"A queue follows First In, First Out."},
+ {s:"Programming",q:"Which symbol is commonly used for comments in Java single-line code?",o:["//","##","<!--","**"],a:0,e:"Java uses // for single-line comments."},
+ {s:"Mathematics",q:"What is the square root of 144?",o:["10","11","12","14"],a:2,e:"12 × 12 = 144."},
+ {s:"Physics",q:"What is the SI unit of electric current?",o:["Volt","Ampere","Ohm","Watt"],a:1,e:"Electric current is measured in amperes."},
+ {s:"AI",q:"What does AI stand for?",o:["Automatic Internet","Artificial Intelligence","Advanced Input","Applied Information"],a:1,e:"AI stands for Artificial Intelligence."},
+ {s:"Cyber Security",q:"What is the purpose of a firewall?",o:["Play videos","Filter network traffic","Edit images","Store files"],a:1,e:"A firewall monitors and filters network traffic according to rules."}
+];
+
+const interviewQuestions = [
+ ["HR","Tell me about yourself.","Give a brief introduction covering your education, skills, interests and career goals."],
+ ["HR","What are your strengths?","Mention relevant strengths and support them with a genuine example."],
+ ["HR","Why should we hire you?","Explain how your skills, willingness to learn and preparation fit the role."],
+ ["Java","What is Java?","Java is a high-level, class-based, object-oriented programming language."],
+ ["Java","What is JVM?","JVM stands for Java Virtual Machine. It executes Java bytecode."],
+ ["Java","What is inheritance?","Inheritance allows a class to acquire properties and methods from another class."],
+ ["Python","What is Python?","Python is a high-level, interpreted, general-purpose programming language."],
+ ["Python","What is a list?","A list is an ordered and mutable collection in Python."],
+ ["DBMS","What is DBMS?","A DBMS is software used to store, manage and retrieve data."],
+ ["DBMS","What is a primary key?","A primary key uniquely identifies each record in a table."],
+ ["Operating System","What is an operating system?","An operating system manages computer hardware and software resources."],
+ ["Operating System","What is a process?","A process is a program currently being executed."],
+ ["Computer Networks","What is a computer network?","A computer network connects devices to share information and resources."],
+ ["Computer Networks","What is HTTP?","HTTP is a protocol used for communication between web clients and servers."]
+];
+
+const notes = [
+ ["HTML Basics","HTML is used to structure web pages. Common elements include headings, paragraphs, links, images and forms."],
+ ["CSS Basics","CSS controls the appearance of web pages, including colors, spacing, typography, layout and responsive design."],
+ ["Java Basics","Java is an object-oriented language. Important concepts include classes, objects, inheritance and polymorphism."],
+ ["DBMS Basics","DBMS manages data. Important concepts include tables, keys, relationships, normalization and SQL."],
+ ["Operating Systems","An operating system manages processes, memory, files and input/output devices."],
+ ["Computer Networks","Computer networks allow connected devices to communicate using protocols such as TCP/IP."]
+];
+
+let currentQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let answered = false;
+let timerValue = 30;
+let timerInterval = null;
+let quizMode = "mega";
+
+function getStore(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch(e) { return fallback; }
+}
+function setStore(key,value) {
+  localStorage.setItem(key,JSON.stringify(value));
+}
+
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const page=document.getElementById(id);
+  if(page) page.classList.add("active");
+  window.scrollTo(0,0);
+  if(id==="interview") renderInterview();
+  if(id==="performance") renderPerformance();
+  if(id==="bookmarks") renderBookmarks();
+  if(id==="wrong") renderWrong();
+  if(id==="study") renderNotes();
+  if(id==="leaderboard") renderLeaderboard();
+  if(id==="profile") loadProfile();
+}
+
+function renderFeatures() {
+  document.getElementById("featureGrid").innerHTML=features.map(f=>`
+    <div class="card feature-card" data-name="${f[2].toLowerCase()}">
+      <div class="emoji">${f[1]}</div>
+      <h3>${f[2]}</h3><p>${f[3]}</p>
+      <button class="primary" onclick="openFeature('${f[0]}')">Open →</button>
+    </div>`).join("");
+}
+function openFeature(id) {
+  if(id==="mega") startQuiz("mega");
+  else showPage(id);
+}
+function filterFeatures() {
+  const value=document.getElementById("featureSearch").value.toLowerCase();
+  document.querySelectorAll(".feature-card").forEach(c=>{
+    c.style.display=c.dataset.name.includes(value)?"":"none";
+  });
+}
+function toggleTheme() {
+  document.body.classList.toggle("light");
+}
+
+// QUIZ ENGINE
+
+async function startQuiz(mode) {
+  quizMode = mode;
+
+  showPage("quiz");
+
+  document.getElementById("quizTitle").textContent =
+    mode === "exam" ? "Exam Mode" :
+    mode === "battle" ? "Battle Mode" :
+    mode === "daily" ? "Daily Challenge" :
+    "All Subject Mega Quiz";
+
+  document.getElementById("questionText").textContent =
+    "Loading questions from Supabase...";
+
+  document.getElementById("options").innerHTML = "";
+  document.getElementById("nextBtn").disabled = true;
+
+  try {
+    const data = await loadSupabaseQuiz();
+
+    if (!data.length) {
+      document.getElementById("questionText").textContent =
+        "Questions not found in Supabase.";
+
+      document.getElementById("feedback").textContent =
+        "Please check your table columns and imported question data.";
+
+      return;
+    }
+
+    currentQuestions = [...data].sort(() => Math.random() - 0.5);
+
+    if (mode === "exam") currentQuestions = currentQuestions.slice(0, 10);
+    else if (mode === "daily") currentQuestions = currentQuestions.slice(0, 5);
+    else currentQuestions = currentQuestions.slice(0, 15);
+
+    currentIndex = 0;
+    score = 0;
+
+    showQuestion();
+
+  } catch (error) {
+    document.getElementById("questionText").textContent =
+      "Unable to load questions.";
+
+    document.getElementById("feedback").textContent =
+      error.message;
+
+    console.error(error);
+  }
+}
+
+function showQuestion() {
+  clearInterval(timerInterval);
+  answered=false;
+  const q=currentQuestions[currentIndex];
+  if(!q) return finishQuiz();
+  document.getElementById("questionCount").textContent=
+    `Question ${currentIndex+1} / ${currentQuestions.length} · ${q.s}`;
+  document.getElementById("questionText").textContent=q.q;
+  document.getElementById("quizProgress").style.width=
+    (currentIndex/currentQuestions.length*100)+"%";
+  document.getElementById("feedback").textContent="";
+  document.getElementById("nextBtn").disabled=true;
+  document.getElementById("nextBtn").textContent=
+    currentIndex===currentQuestions.length-1?"Finish Quiz":"Next Question →";
+  document.getElementById("options").innerHTML=q.o.map((o,i)=>
+    `<button class="option" onclick="chooseAnswer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`
+  ).join("");
+  timerValue=30;
+  document.getElementById("timer").textContent="⏱ "+timerValue;
+  timerInterval=setInterval(()=>{
+    timerValue--;
+    document.getElementById("timer").textContent="⏱ "+timerValue;
+    if(timerValue<=0) {
+      clearInterval(timerInterval);
+      if(!answered) chooseAnswer(-1);
+    }
+  },1000);
+}
+function chooseAnswer(index) {
+  if(answered)return;
+  answered=true;
+  clearInterval(timerInterval);
+  const q=currentQuestions[currentIndex];
+  const buttons=document.querySelectorAll("#options .option");
+  buttons.forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.a)b.classList.add("correct");
+    if(i===index && index!==q.a)b.classList.add("wrong");
+  });
+  if(index===q.a) {
+    score++;
+    document.getElementById("feedback").textContent="✅ Correct! "+q.e;
+  } else {
+    document.getElementById("feedback").textContent="❌ Correct answer: "+q.o[q.a]+". "+q.e;
+    const wrong=getStore("wrongQuestions",[]);
+    if(!wrong.some(x=>x.q===q.q)) {
+      wrong.push(q);setStore("wrongQuestions",wrong);
+    }
+  }
+  document.getElementById("nextBtn").disabled=false;
+}
+function nextQuestion() {
+  if(!answered)return;
+  currentIndex++;
+  if(currentIndex>=currentQuestions.length)finishQuiz();
+  else showQuestion();
+}
+
+function finishQuiz() {
+
+  clearInterval(timerInterval);
+
+  const total = currentQuestions.length;
+
+  const history = getStore("quizHistory", []);
+
+  history.unshift({
+    score: score,
+    total: total,
+    date: new Date().toLocaleDateString(),
+    mode: quizMode
+  });
+
+  setStore("quizHistory", history.slice(0, 30));
+
+  setStore(
+    "totalCorrect",
+    getStore("totalCorrect", 0) + score
+  );
+
+  showPage("performance");
+}
+
+
+// INTERVIEW
+
+async function renderInterview() {
+  const container = document.getElementById("interviewList");
+
+  container.innerHTML = "<p class='muted'>Loading interview questions...</p>";
+
+  try {
+    const data = await loadSupabaseInterview();
+
+    const category = document.getElementById("interviewCategory").value;
+
+    const list = data.filter(q =>
+      category === "All" ||
+      q.category.toLowerCase() === category.toLowerCase()
+    );
+
+    container.innerHTML = list.map((q, i) => `
+      <div class="list-item">
+        <div class="tag">${escapeHTML(q.category)}</div>
+
+        <strong>${i + 1}. ${escapeHTML(q.question)}</strong>
+
+        <button class="small-btn" style="display:block;margin-top:10px"
+          onclick="this.nextElementSibling.classList.toggle('hidden')">
+          Show Answer
+        </button>
+
+        <p class="muted hidden" style="margin-top:10px">
+          ${escapeHTML(q.answer)}
+        </p>
+      </div>
+    `).join("") || "<p>No questions found in this category.</p>";
+
+  } catch (error) {
+    container.innerHTML =
+      `<p class="muted">Supabase connection error: ${escapeHTML(error.message)}</p>`;
+
+    console.error(error);
+  }
+}
+
+function renderPerformance() {
+
+  const history = getStore("quizHistory", []);
+
+  const total = history.reduce(
+    (sum, q) => sum + Number(q.total || 0), 0
+  );
+
+  const correct = history.reduce(
+    (sum, q) => sum + Number(q.score || 0), 0
+  );
+
+  document.getElementById("totalQuizzes").textContent =
+    history.length;
+
+  document.getElementById("performanceCorrect").textContent =
+    correct;
+
+  document.getElementById("averageScore").textContent =
+    (total ? Math.round(correct / total * 100) : 0) + "%";
+
+  document.getElementById("performanceHistory").innerHTML =
+    history.map((q, i) => `
+      <div class="list-item">
+        <strong>Quiz ${i + 1}</strong>
+        <p>${q.date} · ${q.mode}</p>
+        <strong>${q.score} / ${q.total}</strong>
+      </div>
+    `).join("") ||
+    "<p class='muted'>No quiz history yet.</p>";
+}
+
+
+// LEADERBOARD
+function renderLeaderboard() {
+  const names=[["Aarav",980],["Priya",950],["Rahul",920],["Sneha",890],["Student",getStore("totalCorrect",0)*10]];
+  document.getElementById("leaderboardList").innerHTML=names.sort((a,b)=>b[1]-a[1])
+  .map((n,i)=>`<div class="list-item">#${i+1} 🏅 <strong>${n[0]}</strong><span style="float:right">${n[1]} pts</span></div>`).join("");
+}
+
+/* =====================================
+           21. SHOW QUIZ RESULT
+        ===================================== */
+
+        function showResult() {
+
+            clearInterval(timerInterval);
+
+            document.getElementById("finalScore")
+                .textContent =
+                score + " / " + quizQuestions.length;
+
+            document.getElementById("correctCount")
+                .textContent = correct;
+
+            document.getElementById("wrongCount")
+                .textContent = wrong;
+
+            let message;
+
+            if (score >= 12) {
+
+                message =
+                    "Excellent work! Keep learning. 🚀";
+
+            } else if (score >= 8) {
+
+                message =
+                    "Good effort! Practice more.";
+
+            } else {
+
+                message =
+                    "Keep practicing. Every quiz makes you better!";
+
+            }
+
+            document.getElementById("resultMessage")
+                .textContent = message;
+
+            showOnly("resultSection");
+
+        }
+
+// DAILY CHALLENGE
+document.getElementById("todayDate").textContent=new Date().toDateString();
+
+// NOTES
+function renderNotes() {
+  const value=(document.getElementById("noteSearch")?.value||"").toLowerCase();
+  document.getElementById("notesList").innerHTML=notes.filter(n=>n[0].toLowerCase().includes(value))
+  .map((n,i)=>`<div class="card"><div class="emoji">📘</div><h3>${n[0]}</h3><p>Study this topic.</p><button class="primary" onclick="openNote(${notes.indexOf(n)})">Read Notes</button></div>`).join("");
+}
+function openNote(i) {
+  document.getElementById("noteTitle").textContent=notes[i][0];
+  document.getElementById("noteContent").textContent=notes[i][1];
+  document.getElementById("noteViewer").classList.remove("hidden");
+}
+
+// AI DEMO
+function askAssistant() {
+  const input=document.getElementById("chatInput");
+  const text=input.value.trim();
+  if(!text)return;
+  const box=document.getElementById("chatBox");
+  box.innerHTML+=`<div class="list-item"><strong>You:</strong> ${escapeHTML(text)}</div>`;
+  box.innerHTML+=`<div class="list-item"><strong>Study Assistant:</strong> This is the demo interface. Real AI answers will work after secure AI API integration. Try checking the Notes & Study Material section for basic study topics.</div>`;
+  input.value="";
+}
+function escapeHTML(s) {
+  return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// PROFILE
+function saveProfile() {
+  const p={
+    name:document.getElementById("profileName").value,
+    college:document.getElementById("profileCollege").value,
+    course:document.getElementById("profileCourse").value
+  };
+  setStore("studentProfile",p);
+  document.getElementById("profileMessage").textContent="Profile saved on this device!";
+}
+function loadProfile() {
+  const p=getStore("studentProfile",{});
+  document.getElementById("profileName").value=p.name||"";
+  document.getElementById("profileCollege").value=p.college||"";
+  document.getElementById("profileCourse").value=p.course||"";
+}
+
+// BOOKMARKS
+function renderBookmarks() {
+  const saved=getStore("bookmarks",[]);
+  document.getElementById("bookmarkList").innerHTML=saved.map((q,i)=>`
+    <div class="list-item"><strong>${q.q}</strong><p class="muted">${q.s}</p>
+    <button class="small-btn" onclick="removeBookmark(${i})">Remove</button></div>`
+  ).join("")||"<p class='muted'>No bookmarked questions yet. Use the bookmark button in quiz questions.</p>";
+}
+function removeBookmark(i) {
+  const b=getStore("bookmarks",[]);b.splice(i,1);setStore("bookmarks",b);renderBookmarks();
+}
+
+// WRONG ANSWERS
+function renderWrong() {
+  const w=getStore("wrongQuestions",[]);
+  document.getElementById("wrongList").innerHTML=w.map(q=>
+    `<div class="list-item"><strong>${q.q}</strong><p class="muted">Correct answer: ${q.o[q.a]}</p></div>`
+  ).join("")||"<p class='muted'>No wrong answers recorded. Complete a quiz to practise missed questions.</p>";
+}
+function startWrongPractice() {
+  const w=getStore("wrongQuestions",[]);
+  if(!w.length){alert("No wrong questions to practise yet.");return;}
+  currentQuestions=w;currentIndex=0;score=0;quizMode="wrong";
+  showPage("quiz");showQuestion();
+}
+
+// CERTIFICATE
+function makeCertificate() {
+  const name=document.getElementById("certificateName").value.trim();
+  const course=document.getElementById("certificateCourse").value.trim();
+  if(!name||!course){alert("Please enter your name and course.");return;}
+  document.getElementById("certName").textContent=name;
+  document.getElementById("certCourse").textContent=course;
+  document.getElementById("certificateArea").classList.remove("hidden");
+}
+
+// Add bookmark button to quiz screen
+const bookmarkButton=document.createElement("button");
+bookmarkButton.className="small-btn";
+bookmarkButton.textContent="⭐ Bookmark Question";
+bookmarkButton.style.marginTop="12px";
+bookmarkButton.onclick=()=>{
+  const q=currentQuestions[currentIndex];
+  const b=getStore("bookmarks",[]);
+  if(!b.some(x=>x.q===q.q)){b.push(q);setStore("bookmarks",b);alert("Question bookmarked!");}
+  else alert("Already bookmarked.");
+};
+document.getElementById("nextBtn").parentNode.insertBefore(bookmarkButton,document.getElementById("nextBtn"));
+
+// =================================
+// SUPABASE LOGIN & SIGNUP SYSTEM
+// =================================
+
+let authMode = "login";
+
+function toggleAuthMode() {
+  authMode = authMode === "login" ? "signup" : "login";
+
+  document.getElementById("signupFields")
+    .classList.toggle("hidden", authMode !== "signup");
+
+  document.querySelector("#authPage .primary")
+    .textContent = authMode === "login" ? "Login" : "Create Account";
+
+  document.querySelector("#authPage .small-btn")
+    .textContent = authMode === "login"
+      ? "Create New Account"
+      : "Already have an account? Login";
+
+  document.getElementById("authMessage").textContent = "";
+}
+
+async function handleAuth() {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+  const name = document.getElementById("signupName").value.trim();
+  const message = document.getElementById("authMessage");
+
+  if (!email || !password) {
+    message.textContent = "Enter email and password.";
+    return;
+  }
+
+  if (password.length < 6) {
+    message.textContent = "Password must be at least 6 characters.";
+    return;
+  }
+
+  if (authMode === "signup" && !name) {
+    message.textContent = "Enter your full name.";
+    return;
+  }
+
+  message.textContent = "Please wait...";
+
+  try {
+    const isSignup = authMode === "signup";
+
+    const endpoint = isSignup
+      ? "/auth/v1/signup"
+      : "/auth/v1/token?grant_type=password";
+
+    const response = await fetch(SUPABASE_URL + endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY
+      },
+      body: JSON.stringify(
+        isSignup
+          ? {
+              email,
+              password,
+              data: { full_name: name }
+            }
+          : { email, password }
+      )
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.msg || data.message || data.error_description || data.error || "Authentication failed.");
+    }
+
+    if (data.access_token) {
+      localStorage.setItem("authSession", JSON.stringify(data));
+      message.textContent = "Login successful!";
+      document.body.classList.remove("logged-out");
+      showPage("home");
+    } else {
+      message.textContent =
+        "Account created! Verify your email, then log in.";
+      authMode = "login";
+      document.getElementById("signupFields").classList.add("hidden");
+      document.querySelector("#authPage .primary").textContent = "Login";
+      document.querySelector("#authPage .small-btn").textContent = "Create New Account";
+    }
+
+  } catch (error) {
+    message.textContent = error.message;
+  }
+}
+
+function checkLogin() {
+  const session = getStore("authSession", null);
+
+  if (session && session.access_token) {
+    document.body.classList.remove("logged-out");
+    showPage("home");
+  } else {
+    document.body.classList.add("logged-out");
+    showPage("authPage");
+  }
+}
+
+// INIT
+renderFeatures();
+renderNotes();
+checkLogin();
+  
+async function openVTUStudy() {
+  const scheme = document.getElementById("vtuScheme").value;
+  const branch = document.getElementById("vtuBranch").value;
+  const semester = document.getElementById("vtuSemester").value;
+
+  if (!scheme || !branch || !semester) {
+    alert("Please select Scheme, Branch and Semester!");
+    return;
+  }
+
+  const section = document.getElementById("vtuSubjectsSection");
+  const info = document.getElementById("vtuSelectionInfo");
+  const list = document.getElementById("vtuSubjectsList");
+
+  section.classList.remove("hidden");
+
+  info.textContent = scheme + " Scheme | " + branch + " | " + semester;
+  list.innerHTML = "<p>Loading subjects...</p>";
+
+  try {
+    const allSubjects = await fetchSupabaseTable("vtu_subjects");
+
+    const semesterNumber = parseInt(semester, 10);
+
+    const subjects = allSubjects.filter(subject =>
+      subject.scheme === scheme &&
+      subject.branch_code === branch &&
+      Number(subject.semester) === semesterNumber
+    );
+
+    if (subjects.length === 0) {
+      list.innerHTML =
+        "<p>No subjects added for this selection yet.</p>";
+    } else {
+      list.innerHTML = subjects.map(subject => `
+        <div class="card">
+          <div class="emoji">📘</div>
+          <h3>${escapeHTML(subject.subject_code)}</h3>
+          <p>${escapeHTML(subject.subject_name)}</p>
+          <p>${escapeHTML(subject.subject_type || "Theory")}</p>
+        </div>
+      `).join("");
+    }
+
+  } catch (error) {
+    list.innerHTML =
+      "<p>Database Error: " + escapeHTML(error.message) + "</p>";
+  }
+
+  section.scrollIntoView({ behavior: "smooth" });
+}
+
+</script>
+</body>
+</html>
